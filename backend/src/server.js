@@ -14,9 +14,6 @@ const adminRoutes = require('./routes/adminRoutes');
 // Initialize express app
 const app = express();
 
-// Connect to database
-connectDB();
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -88,9 +85,21 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
-    console.log(`Database: PostgreSQL`);
-});
+const startServer = async () => {
+    try {
+        // Connect to database first
+        await connectDB();
+
+        const PORT = process.env.PORT || 5000;
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+            console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
+            console.log(`Database: PostgreSQL`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error.message);
+        process.exit(1);
+    }
+};
+
+startServer();
