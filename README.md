@@ -1,6 +1,6 @@
 # Production-Ready E-commerce Web Application
 
-A full-featured e-commerce platform built with React (Vite), Node.js, Express, and MongoDB. Features include product management, shopping cart, multiple payment methods (COD, UPI QR), admin panel, and WhatsApp integration.
+A full-featured e-commerce platform built with React (Vite), Node.js, Express, and PostgreSQL. Features include product management, shopping cart, multiple payment methods (COD, UPI QR), admin panel, and WhatsApp integration.
 
 ## 🚀 Features
 
@@ -36,14 +36,14 @@ A full-featured e-commerce platform built with React (Vite), Node.js, Express, a
 - **API Documentation**: Swagger UI at `/api-docs`
 - **Image Upload**: Multer for handling product images
 - **Security**: JWT tokens, password hashing with bcrypt
-- **Database**: MongoDB with Mongoose ODM
+- **Database**: PostgreSQL with Sequelize ORM
 - **Loading States**: Skeleton screens for better UX
 - **Toast Notifications**: Real-time feedback for user actions
 
 ## 📋 Prerequisites
 
 - Node.js (v16 or higher)
-- MongoDB (local or MongoDB Atlas)
+- PostgreSQL (local or cloud-hosted)
 - npm or yarn
 
 ## 🛠️ Installation & Setup
@@ -245,8 +245,8 @@ ecommerce/
 ### Backend
 - **Node.js** - Runtime
 - **Express** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM
+- **PostgreSQL** - Database
+- **Sequelize** - ORM
 - **JWT** - Authentication
 - **Bcrypt** - Password hashing
 - **Multer** - File upload
