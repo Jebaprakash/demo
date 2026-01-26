@@ -86,19 +86,21 @@ app.use((err, req, res, next) => {
 
 // Start server
 const startServer = async () => {
-    try {
-        // Connect to database first
-        await connectDB();
+    const PORT = process.env.PORT || 8080;
 
-        const PORT = process.env.PORT || 5000;
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-            console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
-            console.log(`Database: PostgreSQL`);
-        });
+    const server = app.listen(PORT, '0.0.0.0', () => {
+        console.log(`Server is listening on port ${PORT}`);
+        console.log(`Health check: http://localhost:${PORT}/health`);
+    });
+
+    try {
+        console.log('Starting database connection...');
+        await connectDB();
+        console.log('Database setup complete.');
     } catch (error) {
-        console.error('Failed to start server:', error.message);
-        process.exit(1);
+        console.error('Failed to initialize database:', error.message);
+        // We keep the server running so we can see the errors in logs 
+        // and ideally serve a 503 error instead of crashing.
     }
 };
 

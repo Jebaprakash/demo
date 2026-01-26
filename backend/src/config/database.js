@@ -61,7 +61,7 @@ const connectDB = async () => {
         if (error.original) {
             console.error('- Original Error:', error.original.message);
         }
-        process.exit(1);
+        throw error;
     }
 };
 
