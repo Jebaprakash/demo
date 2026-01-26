@@ -44,26 +44,7 @@ function App() {
                     />
 
                     <Routes>
-                        {/* Customer Routes */}
-                        <Route
-                            path="/*"
-                            element={
-                                <>
-                                    <Navbar />
-                                    <CartDrawer />
-                                    <Routes>
-                                        <Route path="/" element={<HomePage />} />
-                                        <Route path="/products" element={<ProductListPage />} />
-                                        <Route path="/products/:id" element={<ProductDetailPage />} />
-                                        <Route path="/checkout" element={<CheckoutPage />} />
-                                        <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
-                                        <Route path="*" element={<Navigate to="/" replace />} />
-                                    </Routes>
-                                </>
-                            }
-                        />
-
-                        {/* Admin Routes */}
+                        {/* Admin Routes - Must come BEFORE customer routes */}
                         <Route path="/admin/login" element={<AdminLogin />} />
                         <Route
                             path="/admin/dashboard"
@@ -90,6 +71,25 @@ function App() {
                             }
                         />
                         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+
+                        {/* Customer Routes */}
+                        <Route
+                            path="/*"
+                            element={
+                                <>
+                                    <Navbar />
+                                    <CartDrawer />
+                                    <Routes>
+                                        <Route path="/" element={<HomePage />} />
+                                        <Route path="/products" element={<ProductListPage />} />
+                                        <Route path="/products/:id" element={<ProductDetailPage />} />
+                                        <Route path="/checkout" element={<CheckoutPage />} />
+                                        <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
+                                        <Route path="*" element={<Navigate to="/" replace />} />
+                                    </Routes>
+                                </>
+                            }
+                        />
                     </Routes>
                 </CartProvider>
             </AuthProvider>
