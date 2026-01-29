@@ -17,7 +17,8 @@ const app = express();
 // Middleware
 const allowedOrigins = [
     process.env.FRONTEND_URL,
-    'https://ecommerce-frontend-brown.vercel.app', // User's specific frontend
+    'https://demo-mu-amber-91.vercel.app', // New Vercel deployment
+    'https://ecommerce-frontend-brown.vercel.app',
     'http://localhost:3000',
     'http://localhost:5173'
 ].filter(Boolean);
