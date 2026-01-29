@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
 import { ordersAPI } from '../services/api';
+import { getImageUrl } from '../utils/url';
 import toast from 'react-hot-toast';
 
 export const CheckoutPage = () => {
@@ -90,13 +91,6 @@ export const CheckoutPage = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const getImageUrl = (images) => {
-        if (images && images.length > 0) {
-            return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${images[0]}`;
-        }
-        return 'https://via.placeholder.com/80?text=No+Image';
     };
 
     if (cartItems.length === 0) {

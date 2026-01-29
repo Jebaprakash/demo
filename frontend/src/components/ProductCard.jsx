@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 
+import { getImageUrl } from '../utils/url';
+
 export const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
@@ -15,9 +17,7 @@ export const ProductCard = ({ product }) => {
         navigate(`/products/${product.id}`);
     };
 
-    const imageUrl = product.images && product.images.length > 0
-        ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${product.images[0]}`
-        : 'https://via.placeholder.com/400x300?text=No+Image';
+    const imageUrl = getImageUrl(product.images?.[0]);
 
     return (
         <motion.div

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AdminLayout } from '../../components/admin/AdminLayout';
 import { adminAPI } from '../../services/api';
+import { getImageUrl } from '../../utils/url';
 import toast from 'react-hot-toast';
 
 export const ProductManagement = () => {
@@ -152,7 +153,7 @@ export const ProductManagement = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <img
-                                                    src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${product.images[0]}`}
+                                                    src={getImageUrl(product.images[0])}
                                                     alt={product.name}
                                                     className="w-12 h-12 object-cover rounded-lg"
                                                 />

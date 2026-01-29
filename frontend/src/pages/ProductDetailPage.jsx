@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { productsAPI } from '../services/api';
 import { useCart } from '../contexts/CartContext';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
+import { getImageUrl } from '../utils/url';
 import toast from 'react-hot-toast';
 
 export const ProductDetailPage = () => {
@@ -37,10 +38,6 @@ export const ProductDetailPage = () => {
             addToCart(product, quantity);
             setQuantity(1);
         }
-    };
-
-    const getImageUrl = (imagePath) => {
-        return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${imagePath}`;
     };
 
     if (loading) {
@@ -94,8 +91,8 @@ export const ProductDetailPage = () => {
                                             key={index}
                                             onClick={() => setSelectedImage(index)}
                                             className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index
-                                                    ? 'border-primary-500 ring-2 ring-primary-200'
-                                                    : 'border-gray-200 hover:border-primary-300'
+                                                ? 'border-primary-500 ring-2 ring-primary-200'
+                                                : 'border-gray-200 hover:border-primary-300'
                                                 }`}
                                         >
                                             <img
