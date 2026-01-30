@@ -21,24 +21,19 @@ function App() {
             <AuthProvider>
                 <CartProvider>
                     <Toaster
-                        position="top-right"
+                        position="bottom-left"
                         toastOptions={{
-                            duration: 3000,
+                            duration: 4000,
                             style: {
-                                background: '#363636',
+                                background: 'rgba(15, 23, 42, 0.9)',
                                 color: '#fff',
-                            },
-                            success: {
-                                iconTheme: {
-                                    primary: '#10b981',
-                                    secondary: '#fff',
-                                },
-                            },
-                            error: {
-                                iconTheme: {
-                                    primary: '#ef4444',
-                                    secondary: '#fff',
-                                },
+                                backdropFilter: 'blur(12px)',
+                                borderRadius: '1.5rem',
+                                padding: '1rem 1.5rem',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                fontSize: '0.875rem',
+                                fontWeight: '600',
+                                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
                             },
                         }}
                     />
