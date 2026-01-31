@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
 import { HomePage } from './pages/HomePage';
 import { ProductListPage } from './pages/ProductListPage';
@@ -74,14 +75,19 @@ function App() {
                                 <>
                                     <Navbar />
                                     <CartDrawer />
-                                    <Routes>
-                                        <Route path="/" element={<HomePage />} />
-                                        <Route path="/products" element={<ProductListPage />} />
-                                        <Route path="/products/:id" element={<ProductDetailPage />} />
-                                        <Route path="/checkout" element={<CheckoutPage />} />
-                                        <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
-                                        <Route path="*" element={<Navigate to="/" replace />} />
-                                    </Routes>
+                                    <div className="flex flex-col min-h-screen">
+                                        <div className="flex-grow">
+                                            <Routes>
+                                                <Route path="/" element={<HomePage />} />
+                                                <Route path="/products" element={<ProductListPage />} />
+                                                <Route path="/products/:id" element={<ProductDetailPage />} />
+                                                <Route path="/checkout" element={<CheckoutPage />} />
+                                                <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
+                                                <Route path="*" element={<Navigate to="/" replace />} />
+                                            </Routes>
+                                        </div>
+                                        <Footer />
+                                    </div>
                                 </>
                             }
                         />

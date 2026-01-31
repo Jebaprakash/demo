@@ -12,7 +12,7 @@
 
 @layer components {
   .btn-primary {
-    @apply relative overflow-hidden bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-3 px-8 rounded-xl shadow-[0_10px_20px_-10px_rgba(2, 132, 199, 0.5)] hover:shadow-[0_15px_25px_-10px_rgba(2, 132, 199, 0.6)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95;
+    @apply relative overflow-hidden bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-3 px-8 rounded-xl shadow-premium-btn hover:shadow-premium-btn-hover transition-all duration-300 transform hover:-translate-y-1 active:scale-95;
   }
 
   .btn-secondary {
@@ -24,7 +24,7 @@
   }
 
   .card-premium {
-    @apply bg-white rounded-3xl shadow-[0_4px_20px_-4px_rgba(0, 0, 0, 0.1)] hover:shadow-[0_10px_40px_-10px_rgba(0, 0, 0, 0.15)] transition-all duration-500 overflow-hidden border border-slate-100;
+    @apply bg-white rounded-3xl shadow-premium-card hover:shadow-premium-card-hover transition-all duration-500 overflow-hidden border border-slate-100;
   }
 
   .input-field {

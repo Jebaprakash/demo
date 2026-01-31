@@ -60,6 +60,12 @@ export default {
                     '100%': { transform: 'translateX(0)', opacity: '1' },
                 },
             },
+            boxShadow: {
+                'premium-btn': '0 10px 20px -10px rgba(2, 132, 199, 0.5)',
+                'premium-btn-hover': '0 15px 25px -10px rgba(2, 132, 199, 0.6)',
+                'premium-card': '0 4px 20px -4px rgba(0, 0, 0, 0.1)',
+                'premium-card-hover': '0 10px 40px -10px rgba(0, 0, 0, 0.15)',
+            },
         },
     },
     plugins: [],

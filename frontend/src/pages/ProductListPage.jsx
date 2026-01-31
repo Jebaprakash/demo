@@ -26,8 +26,17 @@ export const ProductListPage = () => {
     }, []);
 
     useEffect(() => {
-        fetchProducts();
-    }, [filters]);
+        // Sync filters with search params
+        const newFilters = {
+            search: searchParams.get('search') || '',
+            category: searchParams.get('category') || '',
+            minPrice: searchParams.get('minPrice') || '',
+            maxPrice: searchParams.get('maxPrice') || '',
+            sort: searchParams.get('sort') || 'newest',
+        };
+        setFilters(newFilters);
+        fetchProducts(newFilters);
+    }, [searchParams]);
 
     const fetchCategories = async () => {
         try {
@@ -38,15 +47,15 @@ export const ProductListPage = () => {
         }
     };
 
-    const fetchProducts = async () => {
+    const fetchProducts = async (currentFilters) => {
         setLoading(true);
         try {
             const params = {};
-            if (filters.search) params.search = filters.search;
-            if (filters.category) params.category = filters.category;
-            if (filters.minPrice) params.minPrice = filters.minPrice;
-            if (filters.maxPrice) params.maxPrice = filters.maxPrice;
-            if (filters.sort) params.sort = filters.sort;
+            if (currentFilters.search) params.search = currentFilters.search;
+            if (currentFilters.category) params.category = currentFilters.category;
+            if (currentFilters.minPrice) params.minPrice = currentFilters.minPrice;
+            if (currentFilters.maxPrice) params.maxPrice = currentFilters.maxPrice;
+            if (currentFilters.sort) params.sort = currentFilters.sort;
 
             const res = await productsAPI.getAll(params);
             setProducts(res.data.data);
@@ -59,190 +68,198 @@ export const ProductListPage = () => {
     };
 
     const handleFilterChange = (key, value) => {
-        const newFilters = { ...filters, [key]: value };
-        setFilters(newFilters);
-
-        const params = new URLSearchParams();
-        Object.entries(newFilters).forEach(([k, v]) => {
-            if (v) params.set(k, v);
-        });
-        setSearchParams(params);
+        const newParams = new URLSearchParams(searchParams);
+        if (value) {
+            newParams.set(key, value);
+        } else {
+            newParams.delete(key);
+        }
+        setSearchParams(newParams);
     };
 
     const clearFilters = () => {
-        setFilters({
-            search: '',
-            category: '',
-            minPrice: '',
-            maxPrice: '',
-            sort: 'newest',
-        });
         setSearchParams({});
     };
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] pt-24 pb-12">
+        <div className="min-h-screen bg-[#fafafa] pt-32 pb-24">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-2">
-                            Our <span className="text-gradient">Collections</span>
+                        <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.4em] mb-4 block">Collections</span>
+                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter">
+                            EXPLORE <span className="text-slate-300">ALL.</span>
                         </h1>
-                        <p className="text-slate-500 font-medium">Explore our wide range of premium products</p>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                    <div className="flex items-center gap-4">
+                        <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-bold text-slate-700 shadow-sm hover:shadow-md transition-all lg:hidden"
+                            className="lg:hidden flex items-center space-x-2 px-6 py-4 bg-white border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm"
                         >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                             </svg>
-                            Filters
-                        </motion.button>
+                            <span>Filters</span>
+                        </button>
 
-                        <div className="relative flex-1 md:flex-none">
+                        <div className="relative group">
                             <select
                                 value={filters.sort}
                                 onChange={(e) => handleFilterChange('sort', e.target.value)}
-                                className="w-full md:w-48 appearance-none px-6 py-3 bg-white border border-slate-200 rounded-2xl font-bold text-slate-700 shadow-sm outline-none focus:border-primary-500 transition-all cursor-pointer"
+                                className="appearance-none bg-white border border-slate-200 rounded-2xl px-8 py-4 pr-12 font-black text-xs uppercase tracking-widest outline-none focus:border-primary-500 transition-all cursor-pointer shadow-sm"
                             >
-                                <option value="newest">Sort: Newest</option>
+                                <option value="newest">Sort by Newest</option>
                                 <option value="price-low">Price: Low to High</option>
                                 <option value="price-high">Price: High to Low</option>
                             </select>
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Sidebar Filters - Desktop */}
-                    <aside className={`lg:w-72 space-y-8 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-                        <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                            <div className="space-y-8">
-                                {/* Search */}
-                                <div>
-                                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-4">Search</h3>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            value={filters.search}
-                                            onChange={(e) => handleFilterChange('search', e.target.value)}
-                                            placeholder="Find products..."
-                                            className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:border-primary-500 transition-all outline-none text-sm font-medium"
-                                        />
-                                        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </div>
-                                </div>
-
-                                {/* Categories */}
-                                <div>
-                                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-4">Categories</h3>
-                                    <div className="space-y-2">
-                                        <button
-                                            onClick={() => handleFilterChange('category', '')}
-                                            className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${filters.category === '' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30' : 'text-slate-600 hover:bg-slate-50'
-                                                }`}
-                                        >
-                                            All Categories
-                                        </button>
-                                        {categories.map((cat) => (
-                                            <button
-                                                key={cat}
-                                                onClick={() => handleFilterChange('category', cat)}
-                                                className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all capitalize ${filters.category === cat ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30' : 'text-slate-600 hover:bg-slate-50'
-                                                    }`}
-                                            >
-                                                {cat}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Price Range */}
-                                <div>
-                                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-4">Price Range</h3>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <input
-                                            type="number"
-                                            value={filters.minPrice}
-                                            onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                                            placeholder="Min"
-                                            className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl outline-none text-sm font-bold focus:bg-white focus:ring-2 focus:ring-primary-100"
-                                        />
-                                        <input
-                                            type="number"
-                                            value={filters.maxPrice}
-                                            onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                                            placeholder="Max"
-                                            className="w-full px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl outline-none text-sm font-bold focus:bg-white focus:ring-2 focus:ring-primary-100"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={clearFilters}
-                                    className="w-full py-3 text-sm font-black text-slate-400 hover:text-red-500 transition-colors uppercase tracking-widest"
-                                >
-                                    Clear all filters
-                                </button>
+                <div className="flex flex-col lg:grid lg:grid-cols-12 gap-12">
+                    {/* Filters Sidebar */}
+                    <aside className={`lg:col-span-3 space-y-10 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+                        {/* Search */}
+                        <div>
+                            <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em] mb-6">Search</h3>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={filters.search}
+                                    onChange={(e) => handleFilterChange('search', e.target.value)}
+                                    placeholder="Keywords..."
+                                    className="w-full bg-white border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold outline-none focus:border-primary-500 transition-all shadow-sm"
+                                />
+                                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
                             </div>
                         </div>
-                    </aside>
 
-                    {/* Main Content */}
-                    <main className="flex-1">
-                        {loading ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                                {[1, 2, 3, 4, 5, 6].map((i) => (
-                                    <LoadingSkeleton key={i} type="product" />
+                        {/* Categories */}
+                        <div>
+                            <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em] mb-6">Mood</h3>
+                            <div className="flex flex-wrap lg:flex-col gap-2">
+                                <button
+                                    onClick={() => handleFilterChange('category', '')}
+                                    className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all text-left ${filters.category === '' ? 'bg-slate-900 text-white shadow-xl' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-100'
+                                        }`}
+                                >
+                                    All Collective
+                                </button>
+                                {categories.map((cat) => (
+                                    <button
+                                        key={cat}
+                                        onClick={() => handleFilterChange('category', cat)}
+                                        className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all text-left capitalize ${filters.category === cat ? 'bg-slate-900 text-white shadow-xl' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-100'
+                                            }`}
+                                    >
+                                        {cat}
+                                    </button>
                                 ))}
                             </div>
-                        ) : products.length === 0 ? (
-                            <div className="text-center py-32 bg-white rounded-[3rem] border border-slate-100">
-                                <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <svg className="w-12 h-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
+                        </div>
+
+                        {/* Price Range */}
+                        <div>
+                            <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em] mb-6">Price Point</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Min</label>
+                                    <input
+                                        type="number"
+                                        value={filters.minPrice}
+                                        onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+                                        className="w-full bg-white border border-slate-100 rounded-xl py-3 px-4 text-sm font-bold outline-none focus:border-primary-500"
+                                    />
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 mb-2">No products found</h3>
-                                <p className="text-slate-500 font-medium mb-8">Try adjusting your search or filters</p>
-                                <button onClick={clearFilters} className="btn-primary">
-                                    Clear all filters
-                                </button>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Max</label>
+                                    <input
+                                        type="number"
+                                        value={filters.maxPrice}
+                                        onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+                                        className="w-full bg-white border border-slate-100 rounded-xl py-3 px-4 text-sm font-bold outline-none focus:border-primary-500"
+                                    />
+                                </div>
                             </div>
-                        ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                                <AnimatePresence mode='popLayout'>
+                        </div>
+
+                        <button
+                            onClick={clearFilters}
+                            className="w-full py-4 text-[10px] font-black text-slate-400 hover:text-red-500 transition-colors uppercase tracking-[0.3em] border-t border-slate-100 pt-8"
+                        >
+                            Reset Preferences
+                        </button>
+                    </aside>
+
+                    {/* Main Grid */}
+                    <main className="lg:col-span-9">
+                        <AnimatePresence mode="wait">
+                            {loading ? (
+                                <motion.div
+                                    key="loading"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10"
+                                >
+                                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                                        <LoadingSkeleton key={i} type="product" />
+                                    ))}
+                                </motion.div>
+                            ) : products.length === 0 ? (
+                                <motion.div
+                                    key="empty"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex flex-col items-center justify-center py-40 bg-white rounded-[4rem] border border-slate-100 shadow-sm"
+                                >
+                                    <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-8">
+                                        <svg className="w-10 h-10 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-3xl font-black text-slate-900 mb-2 tracking-tighter">No items found</h3>
+                                    <p className="text-slate-500 font-medium mb-10">Adjust your filters to see more results</p>
+                                    <button
+                                        onClick={clearFilters}
+                                        className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl"
+                                    >
+                                        Clear Filters
+                                    </button>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="grid"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10"
+                                >
                                     {products.map((product, index) => (
                                         <motion.div
                                             key={product.id}
-                                            layout
-                                            initial={{ opacity: 0, scale: 0.9 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.9 }}
-                                            transition={{ duration: 0.4, delay: index * 0.05 }}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.05 }}
                                         >
                                             <ProductCard product={product} />
                                         </motion.div>
                                     ))}
-                                </AnimatePresence>
-                            </div>
-                        )}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </main>
                 </div>
             </div>
         </div>
     );
 };
+
