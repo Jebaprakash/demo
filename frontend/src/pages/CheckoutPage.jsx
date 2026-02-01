@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
@@ -6,18 +6,33 @@ import { ordersAPI } from '../services/api';
 import { getImageUrl } from '../utils/url';
 import toast from 'react-hot-toast';
 
+import { useAuth } from '../contexts/AuthContext';
+
 export const CheckoutPage = () => {
     const navigate = useNavigate();
     const { cartItems, getCartTotal, clearCart } = useCart();
+    const { user, isAuthenticated } = useAuth();
     const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
-        name: '',
-        phone: '',
-        address: '',
-        city: '',
-        pincode: '',
+        name: user ? `${user.firstName} ${user.lastName}` : '',
+        phone: user?.phone || '',
+        address: user?.address?.street || '',
+        city: user?.address?.city || '',
+        pincode: user?.address?.zipCode || '',
     });
+
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                name: `${user.firstName} ${user.lastName}`,
+                phone: user.phone || '',
+                address: user.address?.street || '',
+                city: user.address?.city || '',
+                pincode: user.address?.zipCode || '',
+            });
+        }
+    }, [user]);
 
     const [paymentMethod, setPaymentMethod] = useState('COD');
 
@@ -314,7 +329,7 @@ export const CheckoutPage = () => {
                                     <div key={item.id} className="flex gap-4 group">
                                         <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 flex-shrink-0">
                                             <img
-                                                src={getImageUrl(item.images)}
+                                                src={getImageUrl(item.images?.[0])}
                                                 alt={item.name}
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                             />

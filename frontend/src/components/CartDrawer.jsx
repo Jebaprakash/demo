@@ -90,7 +90,7 @@ export const CartDrawer = () => {
                                         >
                                             <div className="w-24 h-24 rounded-2xl overflow-hidden bg-white border border-slate-100 flex-shrink-0">
                                                 <img
-                                                    src={getImageUrl(item.images)}
+                                                    src={getImageUrl(item.images?.[0])}
                                                     alt={item.name}
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                 />

@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 export const AdminLayout = ({ children }) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { admin, logout } = useAuth();
+    const { admin, adminLogout } = useAuth();
 
     const navItems = [
         { path: '/admin/dashboard', label: 'Dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
@@ -27,8 +27,8 @@ export const AdminLayout = ({ children }) => {
                             key={item.path}
                             to={item.path}
                             className={`flex items-center px-6 py-3 transition-colors ${location.pathname === item.path
-                                    ? 'bg-white/20 border-r-4 border-white'
-                                    : 'hover:bg-white/10'
+                                ? 'bg-white/20 border-r-4 border-white'
+                                : 'hover:bg-white/10'
                                 }`}
                         >
                             <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,7 +41,7 @@ export const AdminLayout = ({ children }) => {
 
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                     <button
-                        onClick={logout}
+                        onClick={adminLogout}
                         className="flex items-center text-white hover:text-red-200 transition-colors w-full"
                     >
                         <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -17,12 +17,16 @@ const authMiddleware = async (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
+        // Debug: Log success
+        // console.log(`Admin authenticated: ${decoded.username}`);
+
         // Add admin info to request
         req.adminId = decoded.id;
         req.username = decoded.username;
 
         next();
     } catch (error) {
+        console.error('Auth Middleware Error:', error.message);
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({
                 success: false,

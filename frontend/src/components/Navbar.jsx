@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const Navbar = () => {
     const { getCartCount, toggleCart } = useCart();
+    const { isAuthenticated, user } = useAuth();
     const cartCount = getCartCount();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -149,7 +151,7 @@ export const Navbar = () => {
 
                         {/* Cart Button */}
                         <motion.button
-                            onClick={toggleCart}
+                            onClick={() => navigate('/cart')}
                             className="relative p-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -171,16 +173,21 @@ export const Navbar = () => {
                             </AnimatePresence>
                         </motion.button>
 
-                        {/* User Profile / Admin Login */}
-                        <Link to="/admin/login">
+                        {/* User Profile / Login */}
+                        <Link to={isAuthenticated ? "/profile" : "/login"}>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="hidden sm:flex p-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all"
+                                className="hidden sm:flex p-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all items-center space-x-2"
                             >
                                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
+                                {isAuthenticated && (
+                                    <span className="text-xs font-black text-slate-900 uppercase tracking-widest hidden lg:block">
+                                        Hi, {user?.firstName}
+                                    </span>
+                                )}
                             </motion.button>
                         </Link>
 
@@ -231,8 +238,8 @@ export const Navbar = () => {
                                     key={link.path}
                                     to={link.path}
                                     className={`block px-6 py-4 rounded-2xl text-lg font-black transition-all ${location.pathname === link.path
-                                            ? 'text-primary-600 bg-primary-50'
-                                            : 'text-slate-600'
+                                        ? 'text-primary-600 bg-primary-50'
+                                        : 'text-slate-600'
                                         }`}
                                 >
                                     {link.name}
@@ -242,13 +249,20 @@ export const Navbar = () => {
                             <hr className="border-slate-100" />
 
                             <Link
-                                to="/admin/login"
+                                to={isAuthenticated ? "/profile" : "/login"}
                                 className="flex items-center space-x-3 px-6 py-4 text-slate-600 font-bold"
                             >
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
-                                <span>Account / Admin</span>
+                                <span>{isAuthenticated ? `Hi, ${user?.firstName}` : "Sign In"}</span>
+                            </Link>
+
+                            <Link
+                                to="/admin/login"
+                                className="block px-6 py-2 text-xs font-black text-slate-400 uppercase tracking-[0.2em]"
+                            >
+                                Admin Portal
                             </Link>
                         </div>
                     </motion.div>
@@ -257,4 +271,3 @@ export const Navbar = () => {
         </nav>
     );
 };
-

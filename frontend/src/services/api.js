@@ -15,12 +15,58 @@ const api = axios.create({
 
 // Add auth token to requests
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    const adminToken = localStorage.getItem('adminToken');
+    const userToken = localStorage.getItem('userToken');
+
+    // Use admin token for any route starting with /admin
+    if (config.url.startsWith('/admin')) {
+        if (adminToken) {
+            config.headers.Authorization = `Bearer ${adminToken}`;
+        }
+    } else {
+        // Use user token for all other routes (like /users/profile or /orders)
+        if (userToken) {
+            config.headers.Authorization = `Bearer ${userToken}`;
+        }
     }
+
     return config;
 });
+
+// Handle unauthorized responses
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            const isAdminRoute = window.location.pathname.startsWith('/admin');
+
+            if (isAdminRoute) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminData');
+                if (!window.location.pathname.includes('/admin/login')) {
+                    window.location.href = '/admin/login';
+                }
+            } else {
+                localStorage.removeItem('userToken');
+                localStorage.removeItem('userData');
+                if (!window.location.pathname.includes('/login')) {
+                    window.location.href = '/login';
+                }
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
+// Users API
+export const usersAPI = {
+    login: (data) => api.post('/users/login', data),
+    register: (data) => api.post('/users/register', data),
+    getProfile: () => api.get('/users/profile'),
+    updateProfile: (data) => api.put('/users/profile', data),
+};
+
+// ... existing code ...
 
 // Products API
 export const productsAPI = {

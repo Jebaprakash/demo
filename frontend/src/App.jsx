@@ -15,6 +15,10 @@ import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { ProductManagement } from './pages/admin/ProductManagement';
 import { OrderManagement } from './pages/admin/OrderManagement';
 import { ProtectedRoute } from './components/admin/ProtectedRoute';
+import { UserProtectedRoute } from './components/UserProtectedRoute';
+import { AuthPage } from './pages/AuthPage';
+import { ProfilePage } from './pages/ProfilePage';
+import { CartPage } from './pages/CartPage';
 
 function App() {
     return (
@@ -81,8 +85,18 @@ function App() {
                                                 <Route path="/" element={<HomePage />} />
                                                 <Route path="/products" element={<ProductListPage />} />
                                                 <Route path="/products/:id" element={<ProductDetailPage />} />
+                                                <Route path="/cart" element={<CartPage />} />
                                                 <Route path="/checkout" element={<CheckoutPage />} />
                                                 <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
+                                                <Route path="/login" element={<AuthPage />} />
+                                                <Route
+                                                    path="/profile"
+                                                    element={
+                                                        <UserProtectedRoute>
+                                                            <ProfilePage />
+                                                        </UserProtectedRoute>
+                                                    }
+                                                />
                                                 <Route path="*" element={<Navigate to="/" replace />} />
                                             </Routes>
                                         </div>

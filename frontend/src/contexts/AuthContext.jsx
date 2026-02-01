@@ -12,49 +12,84 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
     const [admin, setAdmin] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         // Check if admin is logged in
-        const token = localStorage.getItem('adminToken');
+        const adminToken = localStorage.getItem('adminToken');
         const adminData = localStorage.getItem('adminData');
 
-        if (token && adminData) {
+        if (adminToken && adminData) {
             setAdmin(JSON.parse(adminData));
+            setIsAdminAuthenticated(true);
+        }
+
+        // Check if user is logged in
+        const userToken = localStorage.getItem('userToken');
+        const userData = localStorage.getItem('userData');
+
+        if (userToken && userData) {
+            setUser(JSON.parse(userData));
             setIsAuthenticated(true);
         }
 
         setLoading(false);
     }, []);
 
-    const login = (token, refreshToken, adminData) => {
+    const adminLogin = (token, refreshToken, adminData) => {
         localStorage.setItem('adminToken', token);
         localStorage.setItem('adminRefreshToken', refreshToken);
         localStorage.setItem('adminData', JSON.stringify(adminData));
 
         setAdmin(adminData);
-        setIsAuthenticated(true);
+        setIsAdminAuthenticated(true);
     };
 
-    const logout = () => {
+    const adminLogout = () => {
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminRefreshToken');
         localStorage.removeItem('adminData');
 
         setAdmin(null);
-        setIsAuthenticated(false);
+        setIsAdminAuthenticated(false);
         navigate('/admin/login');
     };
 
+    const userLogin = (token, refreshToken, userData) => {
+        localStorage.setItem('userToken', token);
+        localStorage.setItem('userRefreshToken', refreshToken);
+        localStorage.setItem('userData', JSON.stringify(userData));
+
+        setUser(userData);
+        setIsAuthenticated(true);
+    };
+
+    const userLogout = () => {
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userRefreshToken');
+        localStorage.removeItem('userData');
+
+        setUser(null);
+        setIsAuthenticated(false);
+        navigate('/login');
+    };
+
     const value = {
+        user,
         admin,
         isAuthenticated,
+        isAdminAuthenticated,
         loading,
-        login,
-        logout,
+        login: adminLogin, // Keep 'login' for backward compatibility if needed, but prefer specific ones
+        adminLogin,
+        adminLogout,
+        userLogin,
+        userLogout,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
