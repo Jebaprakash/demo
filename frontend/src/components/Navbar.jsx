@@ -71,15 +71,14 @@ export const Navbar = () => {
                             whileTap={{ scale: 0.95 }}
                             className="relative w-11 h-11 bg-slate-900 rounded-[14px] flex items-center justify-center shadow-2xl overflow-hidden"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary-400/20 to-secondary-400/20" />
-                            <span className="relative text-white font-black text-xl tracking-tighter">M.</span>
+                            <img src="/logo.png" alt="Memories Store" className="w-full h-full object-cover" />
                         </motion.div>
                         <div className="flex flex-col">
-                            <span className="text-2xl font-black text-slate-900 tracking-tighter leading-none group-hover:text-primary-600 transition-colors">
-                                MODERN<span className="text-primary-600">S.</span>
+                            <span className="text-2xl font-black text-slate-900 tracking-tighter leading-none group-hover:text-primary-600 transition-colors uppercase">
+                                MEMORIES<span className="text-primary-600"> STORE</span>
                             </span>
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mt-1">
-                                Premium Goods
+                                Gifts & Photography
                             </span>
                         </div>
                     </Link>

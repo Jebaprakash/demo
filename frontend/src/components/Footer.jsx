@@ -36,28 +36,41 @@ export const Footer = () => {
                     {/* Brand Section */}
                     <div className="lg:col-span-4">
                         <Link to="/" className="flex items-center space-x-3 mb-8 group">
-                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-xl">
-                                <span className="text-slate-900 font-black text-xl tracking-tighter">M.</span>
+                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-xl overflow-hidden">
+                                <img src="/logo.png" alt="Memories Store" className="w-full h-full object-cover" />
                             </div>
-                            <span className="text-2xl font-black text-white tracking-tighter">
-                                MODERN<span className="text-primary-500">S.</span>
+                            <span className="text-2xl font-black text-white tracking-tighter uppercase">
+                                MEMORIES<span className="text-primary-500"> STORE</span>
                             </span>
                         </Link>
                         <p className="text-slate-400 font-medium leading-relaxed mb-8 max-w-sm">
-                            Building the future of e-commerce with curated premium goods and an unparalleled shopping experience.
+                            Capture your best moments with curated premium gifts and professional photography services.
                         </p>
+                        <div className="flex flex-col space-y-4 mb-8">
+                            <a href="tel:6383898599" className="text-slate-400 hover:text-white transition-colors flex items-center gap-3">
+                                <i className="fas fa-phone"></i>
+                                <span>+91 6383898599</span>
+                            </a>
+                            <a href="https://wa.me/c/916383898599" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors flex items-center gap-3">
+                                <i className="fab fa-whatsapp"></i>
+                                <span>WhatsApp Catalog</span>
+                            </a>
+                        </div>
                         <div className="flex items-center space-x-4">
-                            {['twitter', 'facebook', 'instagram', 'linkedin'].map((social) => (
+                            {[
+                                { icon: 'instagram', url: 'https://www.instagram.com/memories_store.in?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==' },
+                                { icon: 'whatsapp', url: 'https://wa.me/c/916383898599' },
+                            ].map((social) => (
                                 <motion.a
-                                    key={social}
-                                    href="#"
+                                    key={social.icon}
+                                    href={social.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     whileHover={{ y: -5, scale: 1.1 }}
                                     className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 hover:bg-primary-600 hover:text-white transition-all duration-300"
                                 >
-                                    <i className={`fab fa-${social}`}></i>
-                                    {/* Using SVG for better reliability if FontAwesome is missing */}
-                                    <span className="sr-only capitalize">{social}</span>
-                                    <div className="w-5 h-5 border-2 border-current rounded-sm opacity-20" />
+                                    <i className={`fab fa-${social.icon}`}></i>
+                                    <span className="sr-only capitalize">{social.icon}</span>
                                 </motion.a>
                             ))}
                         </div>
@@ -86,7 +99,7 @@ export const Footer = () => {
                     <div className="lg:col-span-2">
                         <h4 className="text-white font-black uppercase tracking-widest text-xs mb-8">Newsletter</h4>
                         <p className="text-slate-400 text-sm font-medium mb-6">
-                            Join our community to get early access to new drops.
+                            Join our community to get early access to new collections.
                         </p>
                         <form className="relative">
                             <input
@@ -106,8 +119,8 @@ export const Footer = () => {
                 </div>
 
                 <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p className="text-slate-500 text-xs font-bold tracking-widest uppercase">
-                        © {currentYear} MODERNS STORE. ALL RIGHTS RESERVED.
+                    <p className="text-slate-500 text-xs font-bold tracking-widest uppercase text-center md:text-left">
+                        © {currentYear} MEMORIES STORE. ALL RIGHTS RESERVED.
                     </p>
                     <div className="flex items-center space-x-8">
                         {['Privacy', 'Cookies', 'Security'].map((item) => (

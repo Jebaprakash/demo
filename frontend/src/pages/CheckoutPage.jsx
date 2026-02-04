@@ -296,6 +296,35 @@ export const CheckoutPage = () => {
                                         )}
                                     </motion.label>
                                 </div>
+
+                                {paymentMethod === 'QR' && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        className="mt-8 p-8 bg-slate-900 rounded-[2.5rem] text-white overflow-hidden"
+                                    >
+                                        <div className="flex flex-col md:flex-row items-center gap-8">
+                                            <div className="w-40 h-40 bg-white p-4 rounded-3xl flex items-center justify-center">
+                                                {/* In a real app, this would be a dynamic QR code */}
+                                                <div className="text-slate-900 text-center">
+                                                    <svg className="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m0 11v1m5-10v1m0 8v1m-9-4h1m8 0h1m-7 7h10a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2" />
+                                                    </svg>
+                                                    <span className="text-[10px] font-black uppercase">Scan to Pay</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex-1 text-center md:text-left">
+                                                <h3 className="text-xl font-black mb-2 uppercase tracking-tight">Pay via UPI</h3>
+                                                <div className="bg-white/10 px-6 py-3 rounded-2xl mb-4 inline-block">
+                                                    <code className="text-primary-400 font-bold text-lg">e17mer053-1@okaxis</code>
+                                                </div>
+                                                <p className="text-slate-400 text-sm font-medium leading-relaxed">
+                                                    Please transfer the total amount to the UPI ID above. After payment, take a screenshot and whatsapp us at <span className="text-white font-bold">6383898599</span> with your order details.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
                             </div>
 
                             <motion.button

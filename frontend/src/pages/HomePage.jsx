@@ -44,7 +44,7 @@ export const HomePage = () => {
     ];
 
     const brands = [
-        'Moderno', 'Essence', 'Aura', 'Nova', 'Zenith', 'Vogue'
+        'Photography', 'Gifts', 'Memories', 'Events', 'Portraits', 'Ceremonies'
     ];
 
     return (
@@ -75,13 +75,13 @@ export const HomePage = () => {
                                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">New Collection Just Dropped</span>
                             </div>
 
-                            <h1 className="text-6xl md:text-8xl font-black text-slate-900 leading-[0.9] tracking-tighter mb-8">
-                                REDEFINE <br />
-                                YOUR <span className="text-primary-600">LIVING.</span>
+                            <h1 className="text-6xl md:text-8xl font-black text-slate-900 leading-[0.9] tracking-tighter mb-8 italic uppercase">
+                                PRESERVE <br />
+                                YOUR <span className="text-primary-600">MEMORIES.</span>
                             </h1>
 
                             <p className="text-lg md:text-xl text-slate-500 font-medium max-w-xl mb-12 leading-relaxed">
-                                Experience the intersection of minimalist design and high-end functionality. Curated for the modern professional.
+                                From premium personalized gifts to professional photography services. We help you capture and cherish life's most beautiful moments.
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 mb-16">
