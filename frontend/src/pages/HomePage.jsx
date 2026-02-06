@@ -128,8 +128,8 @@ export const HomePage = () => {
                         >
                             <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-[0_64px_128px_-32px_rgba(0,0,0,0.2)] border-[12px] border-white">
                                 <img
-                                    src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop"
-                                    alt="Hero Product"
+                                    src="/hero-image.png"
+                                    alt="Memories Store - Gifts & Photography"
                                     className="w-full h-full object-cover"
                                 />
                             </div>
