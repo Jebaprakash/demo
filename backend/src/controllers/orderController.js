@@ -23,7 +23,7 @@ const createOrder = async (req, res) => {
             await transaction.rollback();
             return res.status(400).json({
                 success: false,
-                message: 'All customer details are required'
+                message: 'All customer details are required (Name, Phone, Address, City, Pincode)'
             });
         }
 

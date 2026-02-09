@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { AdminLayout } from '../../components/admin/AdminLayout';
 import { adminAPI } from '../../services/api';
 import toast from 'react-hot-toast';
+import * as XLSX from 'xlsx';
 
 export const OrderManagement = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -49,10 +50,51 @@ export const OrderManagement = () => {
         }
     };
 
+    const exportOrders = () => {
+        if (orders.length === 0) {
+            toast.error('No orders to export');
+            return;
+        }
+
+        const data = orders.map(order => ({
+            'Order ID': order.id,
+            'Date': new Date(order.createdAt).toLocaleString(),
+            'Customer Name': order.customer.name,
+            'Customer Email': order.customer.email || 'N/A',
+            'Customer Phone': order.customer.phone,
+            'Address': order.customer.address,
+            'City': order.customer.city,
+            'Pincode': order.customer.pincode,
+            'Items Count': order.items.length,
+            'Items Details': order.items.map(i => `${i.name} (x${i.qty})`).join(', '),
+            'Total Amount': order.totalAmount,
+            'Payment Method': order.paymentMethod,
+            'Payment Status': order.paymentStatus,
+            'Order Status': order.orderStatus
+        }));
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(data);
+        XLSX.utils.book_append_sheet(wb, ws, 'Orders');
+        XLSX.writeFile(wb, `Orders_${new Date().toISOString().split('T')[0]}.xlsx`);
+        toast.success('Orders exported successfully');
+    };
+
     return (
         <AdminLayout>
             <div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-8">Orders</h1>
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900">Orders</h1>
+                    <button
+                        onClick={exportOrders}
+                        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg"
+                    >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Export Excel
+                    </button>
+                </div>
 
                 {/* Filters */}
                 <div className="bg-white rounded-xl shadow-md p-6 mb-6">

@@ -263,6 +263,8 @@ const updateOrder = async (req, res) => {
             });
         }
 
+        const oldStatus = order.orderStatus;
+
         if (orderStatus) {
             order.orderStatus = orderStatus;
         }
@@ -272,6 +274,36 @@ const updateOrder = async (req, res) => {
         }
 
         await order.save();
+
+        // Send email if status changed to Confirmed
+        if (orderStatus === 'Confirmed' && oldStatus !== 'Confirmed' && order.customer.email) {
+            const sendEmail = require('../utils/email');
+            const businessName = process.env.BUSINESS_NAME || 'Our Store';
+
+            const emailOptions = {
+                email: order.customer.email,
+                subject: `Order Confirmed - ${order.id.slice(-8)}`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <h2 style="color: #333; text-align: center;">Order Confirmed!</h2>
+                        <p>Dear ${order.customer.name},</p>
+                        <p>We are happy to inform you that your order <strong>#${order.id.slice(-8)}</strong> has been confirmed by our team.</p>
+                        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <h3 style="margin-top: 0;">Order Summary</h3>
+                            <p><strong>Total Amount:</strong> ₹${parseFloat(order.totalAmount).toLocaleString()}</p>
+                            <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+                        </div>
+                        <p>We will notify you once your order is shipped.</p>
+                        <p>Thank you for shopping with us!</p>
+                        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                        <p style="font-size: 12px; color: #888; text-align: center;">This is an automated email from ${businessName}. Please do not reply.</p>
+                    </div>
+                `
+            };
+
+            // We don't await here to avoid delaying the response, but we handle errors in sendEmail
+            sendEmail(emailOptions);
+        }
 
         res.json({
             success: true,

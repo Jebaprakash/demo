@@ -16,6 +16,7 @@ export const CheckoutPage = () => {
 
     const [formData, setFormData] = useState({
         name: user ? `${user.firstName} ${user.lastName}` : '',
+        email: user?.email || '',
         phone: user?.phone || '',
         address: user?.address?.street || '',
         city: user?.address?.city || '',
@@ -26,6 +27,7 @@ export const CheckoutPage = () => {
         if (user) {
             setFormData({
                 name: `${user.firstName} ${user.lastName}`,
+                email: user.email || '',
                 phone: user.phone || '',
                 address: user.address?.street || '',
                 city: user.address?.city || '',
@@ -50,6 +52,10 @@ export const CheckoutPage = () => {
     const validateForm = () => {
         if (!formData.name.trim()) {
             toast.error('Please enter your name');
+            return false;
+        }
+        if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            toast.error('Please enter a valid email address');
             return false;
         }
         if (!formData.phone.trim() || formData.phone.length < 10) {
@@ -169,6 +175,19 @@ export const CheckoutPage = () => {
                                             required
                                             className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-primary-500 transition-all outline-none text-slate-900 font-bold"
                                             placeholder="Enter your full name"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-primary-500 transition-all outline-none text-slate-900 font-bold"
+                                            placeholder="Enter your email address"
                                         />
                                     </div>
 
