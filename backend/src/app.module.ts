@@ -24,13 +24,13 @@ import { SharedModule } from './shared/shared.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const url = configService.get<string>('DATABASE_URL');
-        const isProd = configService.get<string>('NODE_ENV') === 'production';
 
         if (url) {
           return {
             type: 'postgres',
             url,
             entities: [Product, User, Admin, Order],
+            autoLoadEntities: true,
             synchronize: true, // Temporary fix for new database
             ssl: {
               rejectUnauthorized: false,
@@ -51,6 +51,7 @@ import { SharedModule } from './shared/shared.module';
           password: configService.get<string>('DB_PASSWORD'),
           database: configService.get<string>('DB_NAME'),
           entities: [Product, User, Admin, Order],
+          autoLoadEntities: true,
           synchronize: true,
         };
       },
