@@ -6,6 +6,8 @@ import { ordersAPI } from '../services/api';
 import { getImageUrl } from '../utils/url';
 import toast from 'react-hot-toast';
 
+import { QRCodeSVG } from 'qrcode.react';
+import { generateUPIString } from '../utils/qrGenerator';
 import { useAuth } from '../contexts/AuthContext';
 
 export const CheckoutPage = () => {
@@ -13,6 +15,7 @@ export const CheckoutPage = () => {
     const { cartItems, getCartTotal, clearCart } = useCart();
     const { user, isAuthenticated } = useAuth();
     const [loading, setLoading] = useState(false);
+    const [screenshot, setScreenshot] = useState(null);
 
     const [formData, setFormData] = useState({
         name: user ? `${user.firstName} ${user.lastName}` : '',
@@ -74,6 +77,10 @@ export const CheckoutPage = () => {
             toast.error('Please enter a valid 6-digit pincode');
             return false;
         }
+        if (paymentMethod === 'QR' && !screenshot) {
+            toast.error('Please upload your payment screenshot');
+            return false;
+        }
         return true;
     };
 
@@ -92,16 +99,27 @@ export const CheckoutPage = () => {
         setLoading(true);
 
         try {
-            const orderData = {
-                items: cartItems.map((item) => ({
-                    productId: item.id,
-                    qty: item.quantity,
-                })),
-                customer: formData,
-                paymentMethod,
-            };
+            const itemsFormatted = cartItems.map((item) => ({
+                productId: item.id,
+                qty: item.quantity,
+                name: item.name,
+                price: item.price,
+                image: item.images?.[0]
+            }));
 
-            const res = await ordersAPI.create(orderData);
+            const payloadData = new FormData();
+            payloadData.append('items', JSON.stringify(itemsFormatted));
+            payloadData.append('customer', JSON.stringify(formData));
+            payloadData.append('totalAmount', total);
+            payloadData.append('paymentMethod', paymentMethod);
+
+            if (paymentMethod === 'QR' && screenshot) {
+                payloadData.append('screenshot', screenshot);
+            }
+
+            const res = await ordersAPI.create(payloadData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
 
             toast.success('Order placed successfully!');
             clearCart();
@@ -324,22 +342,52 @@ export const CheckoutPage = () => {
                                     >
                                         <div className="flex flex-col md:flex-row items-center gap-8">
                                             <div className="w-40 h-40 bg-white p-4 rounded-3xl flex items-center justify-center">
-                                                {/* In a real app, this would be a dynamic QR code */}
-                                                <div className="text-slate-900 text-center">
-                                                    <svg className="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m0 11v1m5-10v1m0 8v1m-9-4h1m8 0h1m-7 7h10a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2" />
-                                                    </svg>
-                                                    <span className="text-[10px] font-black uppercase">Scan to Pay</span>
+                                                <div className="w-full text-center">
+                                                    <QRCodeSVG
+                                                        value={generateUPIString(Date.now().toString(), total)}
+                                                        size={128}
+                                                        level="H"
+                                                        includeMargin={true}
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="flex-1 text-center md:text-left">
                                                 <h3 className="text-xl font-black mb-2 uppercase tracking-tight">Pay via UPI</h3>
                                                 <div className="bg-white/10 px-6 py-3 rounded-2xl mb-4 inline-block">
-                                                    <code className="text-primary-400 font-bold text-lg">e17mer053-1@okaxis</code>
+                                                    <code className="text-primary-400 font-bold text-lg">{import.meta.env.VITE_UPI_ID || 'e17mer053-1@okaxis'}</code>
                                                 </div>
-                                                <p className="text-slate-400 text-sm font-medium leading-relaxed">
-                                                    Please transfer the total amount to the UPI ID above. After payment, take a screenshot and whatsapp us at <span className="text-white font-bold">6383898599</span> with your order details.
+                                                <h3 className="text-xl font-black mt-4 mb-2 uppercase tracking-tight">Bank Details</h3>
+                                                <div className="bg-white/10 px-6 py-4 rounded-2xl mb-4 text-sm font-medium leading-relaxed">
+                                                    <p><span className="text-slate-400">Account Name:</span> KIRUPAKARAN R</p>
+                                                    <p><span className="text-slate-400">Account Number:</span> 351100250650060</p>
+                                                    <p><span className="text-slate-400">Branch:</span> PUTHAGARAM</p>
+                                                    <p><span className="text-slate-400">Account Type:</span> Savings Account</p>
+                                                    <p><span className="text-slate-400">IFSC Code:</span> <code className="text-primary-400 font-bold">TMBL0000351</code></p>
+                                                </div>
+                                                <p className="text-slate-400 text-sm font-medium leading-relaxed mb-4">
+                                                    Please transfer the total amount to the UPI ID or Bank Account above. After payment, upload your payment screenshot below.
                                                 </p>
+                                                <div className="bg-slate-800 p-4 rounded-xl border border-slate-700/50">
+                                                    <label className="block text-sm font-bold text-slate-300 mb-2">Upload Payment Screenshot *</label>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => setScreenshot(e.target.files[0])}
+                                                        required={paymentMethod === 'QR'}
+                                                        className="block w-full text-sm text-slate-400
+                                                            file:mr-4 file:py-2.5 file:px-6
+                                                            file:rounded-xl file:border-0
+                                                            file:text-sm file:font-bold
+                                                            file:bg-primary-500 file:text-white
+                                                            hover:file:bg-primary-600 file:transition-all
+                                                            file:cursor-pointer"
+                                                    />
+                                                    {screenshot && (
+                                                        <p className="mt-2 text-primary-400 text-xs font-medium">
+                                                            Selected: {screenshot.name}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </motion.div>

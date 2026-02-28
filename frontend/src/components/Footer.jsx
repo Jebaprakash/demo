@@ -46,8 +46,8 @@ export const Footer = () => {
                         <p className="text-slate-400 font-medium leading-relaxed mb-8 max-w-sm">
                             Capture your best moments with curated premium gifts and professional photography services.
                         </p>
-                        <div className="flex flex-col space-y-4 mb-8">
-                            <a href="tel:6383898599" className="text-slate-400 hover:text-white transition-colors flex items-center gap-3">
+                        <div className="flex flex-col space-y-4 mb-4">
+                            <a href="tel:+916383898599" className="text-slate-400 hover:text-white transition-colors flex items-center gap-3">
                                 <i className="fas fa-phone"></i>
                                 <span>+91 6383898599</span>
                             </a>
@@ -56,10 +56,9 @@ export const Footer = () => {
                                 <span>WhatsApp Catalog</span>
                             </a>
                         </div>
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-4 mb-8">
                             {[
                                 { icon: 'instagram', url: 'https://www.instagram.com/memories_store.in?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==' },
-                                { icon: 'whatsapp', url: 'https://wa.me/c/916383898599' },
                             ].map((social) => (
                                 <motion.a
                                     key={social.icon}

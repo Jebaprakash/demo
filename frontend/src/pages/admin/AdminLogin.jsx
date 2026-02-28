@@ -20,9 +20,9 @@ export const AdminLogin = () => {
 
         try {
             const res = await adminAPI.login(formData);
-            const { accessToken, refreshToken, admin } = res.data.data;
+            const { accessToken, admin } = res.data;
 
-            login(accessToken, refreshToken, admin);
+            login(accessToken, null, admin);
             toast.success('Login successful!');
             navigate('/admin/dashboard');
         } catch (error) {

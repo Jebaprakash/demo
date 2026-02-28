@@ -4,6 +4,7 @@ import { AdminLayout } from '../../components/admin/AdminLayout';
 import { adminAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
+import { getImageUrl } from '../../utils/url';
 
 export const OrderManagement = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -38,6 +39,19 @@ export const OrderManagement = () => {
         try {
             await adminAPI.updateOrder(orderId, { [field]: value });
             toast.success('Order updated successfully');
+
+            // Automatically prompt WhatsApp notification when order is Confirmed
+            if (field === 'orderStatus' && value === 'Confirmed') {
+                const order = orders.find(o => o.id === orderId);
+                if (order && order.customer && order.customer.phone) {
+                    // Send an email or WhatsApp to the mobile number
+                    if (window.confirm(`Order confirmed! Do you want to notify the customer (${order.customer.phone}) via WhatsApp?`)) {
+                        const message = `Hello ${order.customer.name}, your order #${order.id.slice(-8)} has been confirmed! We will notify you once it's shipped.`;
+                        window.open(`https://wa.me/${order.customer.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+                    }
+                }
+            }
+
             fetchOrders();
             if (selectedOrder && selectedOrder.id === orderId) {
                 const res = await adminAPI.getAllOrders();
@@ -280,7 +294,7 @@ export const OrderManagement = () => {
                                         <h3 className="font-bold text-gray-900">Customer Details</h3>
                                         <button
                                             onClick={() => {
-                                                const message = `Hello ${selectedOrder.customer.name}, your order #${selectedOrder.id.slice(-8)} from ${process.env.BUSINESS_NAME || 'our store'} has been confirmed! We will notify you once it's shipped.`;
+                                                const message = `Hello ${selectedOrder.customer.name}, your order #${selectedOrder.id.slice(-8)} from ${import.meta.env.VITE_BUSINESS_NAME || 'our store'} has been confirmed! We will notify you once it's shipped.`;
                                                 window.open(`https://wa.me/${selectedOrder.customer.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
                                             }}
                                             className="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-full font-bold flex items-center gap-1 transition-all"
@@ -292,7 +306,8 @@ export const OrderManagement = () => {
                                         </button>
                                     </div>
                                     <div className="p-4 bg-gray-50 rounded-lg">
-                                        <p className="font-semibold">{selectedOrder.customer.name}</p>
+                                        <p className="font-semibold text-gray-900">{selectedOrder.customer.name}</p>
+                                        <p className="text-gray-700">{selectedOrder.customer.email}</p>
                                         <p className="text-gray-700">{selectedOrder.customer.phone}</p>
                                         <p className="text-gray-700 mt-2">
                                             {selectedOrder.customer.address}<br />
@@ -305,18 +320,50 @@ export const OrderManagement = () => {
                                     <h3 className="font-bold text-gray-900 mb-3">Order Items</h3>
                                     <div className="space-y-2">
                                         {selectedOrder.items.map((item, index) => (
-                                            <div key={index} className="flex justify-between p-3 bg-gray-50 rounded-lg">
-                                                <div>
-                                                    <p className="font-semibold text-gray-900">{item.name}</p>
-                                                    <p className="text-sm text-gray-600">Quantity: {item.qty}</p>
+                                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg gap-4">
+                                                <div className="flex items-center gap-4">
+                                                    {item.image && (
+                                                        <img
+                                                            src={getImageUrl(item.image)}
+                                                            alt={item.name}
+                                                            className="w-12 h-12 rounded-lg object-cover shadow-sm bg-white"
+                                                            onError={(e) => {
+                                                                // Handle cases where the image might be the PG array string representation
+                                                                if (item.image && typeof item.image === 'string' && item.image.startsWith('{"')) {
+                                                                    const cleaned = item.image.replace(/^\{"|"\}$/g, '');
+                                                                    e.target.src = cleaned;
+                                                                }
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <div>
+                                                        <p className="font-semibold text-gray-900">{item.name || 'Product'}</p>
+                                                        <p className="text-xs text-gray-500">
+                                                            {item.qty} x ₹{parseFloat(item.price || 0).toLocaleString()}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                                 <p className="font-bold text-primary-600">
-                                                    ₹{(item.price * item.qty).toLocaleString()}
+                                                    ₹{(parseFloat(item.price || 0) * item.qty).toLocaleString()}
                                                 </p>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
+                                {selectedOrder.paymentScreenshot && (
+                                    <div className="mt-6">
+                                        <h3 className="font-bold text-gray-900 mb-3">Payment Screenshot</h3>
+                                        <div className="bg-gray-50 p-4 rounded-lg flex justify-center">
+                                            <a href={getImageUrl(selectedOrder.paymentScreenshot)} target="_blank" rel="noopener noreferrer">
+                                                <img
+                                                    src={getImageUrl(selectedOrder.paymentScreenshot)}
+                                                    alt="Payment Screenshot"
+                                                    className="max-h-64 object-contain rounded shadow-sm border border-gray-200 hover:scale-[1.02] transition-transform cursor-pointer"
+                                                />
+                                            </a>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

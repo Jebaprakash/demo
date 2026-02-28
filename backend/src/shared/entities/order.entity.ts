@@ -56,6 +56,9 @@ export class Order {
     @Index()
     orderStatus: OrderStatus;
 
+    @Column({ nullable: true })
+    paymentScreenshot: string;
+
     @CreateDateColumn()
     @Index()
     createdAt: Date;

@@ -7,7 +7,7 @@ if (!API_URL) {
 }
 
 const api = axios.create({
-    baseURL: API_URL || 'http://localhost:5000/api',
+    baseURL: (API_URL ? (API_URL.endsWith('/') ? API_URL : `${API_URL}/`) : 'http://localhost:5000/api/'),
     headers: {
         'Content-Type': 'application/json',
     },
@@ -60,47 +60,47 @@ api.interceptors.response.use(
 
 // Users API
 export const usersAPI = {
-    login: (data) => api.post('/users/login', data),
-    register: (data) => api.post('/users/register', data),
-    getProfile: () => api.get('/users/profile'),
-    updateProfile: (data) => api.put('/users/profile', data),
+    login: (data) => api.post('users/login', data),
+    register: (data) => api.post('users/register', data),
+    getProfile: () => api.get('users/profile'),
+    updateProfile: (data) => api.put('users/profile', data),
 };
 
 // ... existing code ...
 
 // Products API
 export const productsAPI = {
-    getAll: (params) => api.get('/products', { params }),
-    getById: (id) => api.get(`/products/${id}`),
-    getCategories: () => api.get('/products/categories'),
+    getAll: (params) => api.get('products', { params }),
+    getById: (id) => api.get(`products/${id}`),
+    getCategories: () => api.get('products/categories'),
 };
 
 // Orders API
 export const ordersAPI = {
-    create: (data) => api.post('/orders', data),
-    getById: (id) => api.get(`/orders/${id}`),
+    create: (data, config) => api.post('orders', data, config),
+    getById: (id) => api.get(`orders/${id}`),
     updatePaymentStatus: (orderId, paymentStatus) =>
-        api.patch(`/orders/${orderId}/payment-status`, { paymentStatus }),
-    getUserOrders: (params) => api.get('/orders/user', { params }),
+        api.patch(`orders/${orderId}/payment-status`, { paymentStatus }),
+    getUserOrders: (params) => api.get('orders/user', { params }),
 };
 
 // Admin API
 export const adminAPI = {
-    login: (credentials) => api.post('/admin/login', credentials),
+    login: (credentials) => api.post('admin/login', credentials),
 
     // Products
-    getAllProducts: () => api.get('/admin/products'),
-    createProduct: (formData) => api.post('/admin/products', formData, {
+    getAllProducts: () => api.get('admin/products'),
+    createProduct: (formData) => api.post('admin/products', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     }),
-    updateProduct: (id, formData) => api.put(`/admin/products/${id}`, formData, {
+    updateProduct: (id, formData) => api.put(`admin/products/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     }),
-    deleteProduct: (id) => api.delete(`/admin/products/${id}`),
+    deleteProduct: (id) => api.delete(`admin/products/${id}`),
 
     // Orders
-    getAllOrders: (params) => api.get('/admin/orders', { params }),
-    updateOrder: (id, data) => api.patch(`/admin/orders/${id}`, data),
+    getAllOrders: (params) => api.get('admin/orders', { params }),
+    updateOrder: (id, data) => api.patch(`admin/orders/${id}`, data),
 };
 
 export default api;

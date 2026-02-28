@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { usersAPI, ordersAPI } from '../services/api';
+import { getImageUrl } from '../utils/url';
 
 export const ProfilePage = () => {
     const { user, userLogout, isAuthenticated, loading: authLoading } = useAuth();
@@ -51,11 +52,13 @@ export const ProfilePage = () => {
             fetchOrders();
         }
     }, [activeTab, user]);
-
     const fetchOrders = async () => {
         setOrdersLoading(true);
         try {
-            const res = await ordersAPI.getUserOrders({ email: user.email });
+            const res = await ordersAPI.getUserOrders({
+                email: user.email,
+                phone: user.phone || ''
+            });
             setOrders(res.data.data || []);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -145,8 +148,8 @@ export const ProfilePage = () => {
                                 <button
                                     onClick={() => setActiveTab('profile')}
                                     className={`w-full flex items-center space-x-3 px-6 py-4 rounded-2xl font-black transition-all ${activeTab === 'profile'
-                                            ? 'bg-primary-50 text-primary-600'
-                                            : 'text-slate-400 hover:bg-slate-50'
+                                        ? 'bg-primary-50 text-primary-600'
+                                        : 'text-slate-400 hover:bg-slate-50'
                                         }`}
                                 >
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -157,8 +160,8 @@ export const ProfilePage = () => {
                                 <button
                                     onClick={() => setActiveTab('orders')}
                                     className={`w-full flex items-center space-x-3 px-6 py-4 rounded-2xl font-black transition-all ${activeTab === 'orders'
-                                            ? 'bg-primary-50 text-primary-600'
-                                            : 'text-slate-400 hover:bg-slate-50'
+                                        ? 'bg-primary-50 text-primary-600'
+                                        : 'text-slate-400 hover:bg-slate-50'
                                         }`}
                                 >
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -342,14 +345,35 @@ export const ProfilePage = () => {
 
                                                 <div className="border-t border-slate-100 pt-4">
                                                     <p className="text-sm font-bold text-slate-700 mb-2">Items:</p>
-                                                    <div className="space-y-1">
-                                                        {order.items.slice(0, 2).map((item, idx) => (
-                                                            <p key={idx} className="text-sm text-slate-600">
-                                                                • {item.name} <span className="text-slate-400">(x{item.qty})</span>
-                                                            </p>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {order.items.slice(0, 3).map((item, idx) => (
+                                                            <div key={idx} className="relative group">
+                                                                {item.image ? (
+                                                                    <img
+                                                                        src={getImageUrl(item.image)}
+                                                                        alt={item.name}
+                                                                        className="w-12 h-12 rounded-lg object-cover border border-slate-100 shadow-sm"
+                                                                        onError={(e) => {
+                                                                            if (item.image && typeof item.image === 'string' && item.image.startsWith('{"')) {
+                                                                                const cleaned = item.image.replace(/^\{"|"\}$/g, '');
+                                                                                e.target.src = cleaned;
+                                                                            }
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <div className="w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100">
+                                                                        <span className="text-[8px] font-bold text-slate-300">N/A</span>
+                                                                    </div>
+                                                                )}
+                                                                <span className="absolute -top-2 -right-2 bg-slate-900 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-white">
+                                                                    {item.qty}
+                                                                </span>
+                                                            </div>
                                                         ))}
-                                                        {order.items.length > 2 && (
-                                                            <p className="text-sm text-slate-400">+ {order.items.length - 2} more item(s)</p>
+                                                        {order.items.length > 3 && (
+                                                            <div className="w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100">
+                                                                <span className="text-xs font-black text-slate-400">+{order.items.length - 3}</span>
+                                                            </div>
                                                         )}
                                                     </div>
                                                 </div>
@@ -441,16 +465,32 @@ export const ProfilePage = () => {
 
                             <div>
                                 <h3 className="font-black text-slate-900 mb-3">Order Items</h3>
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                     {selectedOrder.items.map((item, index) => (
-                                        <div key={index} className="flex justify-between p-4 bg-slate-50 rounded-2xl">
-                                            <div>
-                                                <p className="font-bold text-slate-900">{item.name}</p>
-                                                <p className="text-sm text-slate-600">Quantity: {item.qty}</p>
-                                                <p className="text-sm text-slate-600">Price: ₹{item.price.toLocaleString()}</p>
+                                        <div key={index} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl gap-4">
+                                            <div className="flex items-center gap-4">
+                                                {item.image && (
+                                                    <img
+                                                        src={getImageUrl(item.image)}
+                                                        alt={item.name}
+                                                        className="w-16 h-16 rounded-xl object-cover border border-slate-200 shadow-sm bg-white"
+                                                        onError={(e) => {
+                                                            if (item.image && typeof item.image === 'string' && item.image.startsWith('{"')) {
+                                                                const cleaned = item.image.replace(/^\{"|"\}$/g, '');
+                                                                e.target.src = cleaned;
+                                                            }
+                                                        }}
+                                                    />
+                                                )}
+                                                <div>
+                                                    <p className="font-bold text-slate-900">{item.name || 'Product'}</p>
+                                                    <p className="text-xs text-slate-500 font-bold">
+                                                        {item.qty} x ₹{parseFloat(item.price || 0).toLocaleString()}
+                                                    </p>
+                                                </div>
                                             </div>
                                             <p className="font-black text-primary-600 text-lg">
-                                                ₹{(item.price * item.qty).toLocaleString()}
+                                                ₹{(parseFloat(item.price || 0) * item.qty).toLocaleString()}
                                             </p>
                                         </div>
                                     ))}

@@ -18,7 +18,7 @@ export class OrdersService {
         return {
             success: true,
             message: 'Order created successfully',
-            order: savedOrder,
+            data: savedOrder,
         };
     }
 
@@ -38,17 +38,17 @@ export class OrdersService {
             return { success: false, message: 'Email or phone is required' };
         }
 
-        const qb = this.orderRepository.createQueryBuilder('order');
+        const qb = this.orderRepository.createQueryBuilder('ord');
 
         if (email && phone) {
-            qb.where("order.customer->>'email' = :email OR order.customer->>'phone' = :phone", { email, phone });
+            qb.where("(LOWER(ord.customer->>'email') = LOWER(:email) OR ord.customer->>'phone' = :phone)", { email, phone });
         } else if (email) {
-            qb.where("order.customer->>'email' = :email", { email });
+            qb.where("LOWER(ord.customer->>'email') = LOWER(:email)", { email });
         } else {
-            qb.where("order.customer->>'phone' = :phone", { phone });
+            qb.where("ord.customer->>'phone' = :phone", { phone });
         }
 
-        qb.orderBy('order.createdAt', 'DESC');
+        qb.orderBy('ord.createdAt', 'DESC');
         const orders = await qb.getMany();
 
         return {
