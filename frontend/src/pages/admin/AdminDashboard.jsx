@@ -43,10 +43,10 @@ export const AdminDashboard = () => {
     };
 
     const statCards = [
-        { label: 'Total Products', value: stats.totalProducts, color: 'from-blue-500 to-blue-600', link: '/admin/products' },
-        { label: 'Active Products', value: stats.activeProducts, color: 'from-green-500 to-green-600', link: '/admin/products' },
-        { label: 'Total Orders', value: stats.totalOrders, color: 'from-purple-500 to-purple-600', link: '/admin/orders' },
-        { label: 'Pending Orders', value: stats.pendingOrders, color: 'from-orange-500 to-orange-600', link: '/admin/orders?status=Pending' },
+        { label: 'Total Products', value: stats.totalProducts, color: 'from-blue-500 to-blue-600', link: '/portal-secure-mgt/products' },
+        { label: 'Active Products', value: stats.activeProducts, color: 'from-green-500 to-green-600', link: '/portal-secure-mgt/products' },
+        { label: 'Total Orders', value: stats.totalOrders, color: 'from-purple-500 to-purple-600', link: '/portal-secure-mgt/orders' },
+        { label: 'Pending Orders', value: stats.pendingOrders, color: 'from-orange-500 to-orange-600', link: '/portal-secure-mgt/orders?status=Pending' },
     ];
 
     return (
@@ -84,12 +84,12 @@ export const AdminDashboard = () => {
                     <div className="bg-white rounded-xl shadow-md p-6">
                         <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
                         <div className="space-y-3">
-                            <Link to="/admin/products">
+                            <Link to="/portal-secure-mgt/products">
                                 <button className="w-full btn-primary text-left">
                                     Manage Products
                                 </button>
                             </Link>
-                            <Link to="/admin/orders">
+                            <Link to="/portal-secure-mgt/orders">
                                 <button className="w-full btn-secondary text-left">
                                     View Orders
                                 </button>

@@ -257,12 +257,6 @@ export const Navbar = () => {
                                 <span>{isAuthenticated ? `Hi, ${user?.firstName}` : "Sign In"}</span>
                             </Link>
 
-                            <Link
-                                to="/admin/login"
-                                className="block px-6 py-2 text-xs font-black text-slate-400 uppercase tracking-[0.2em]"
-                            >
-                                Admin Portal
-                            </Link>
                         </div>
                     </motion.div>
                 )}

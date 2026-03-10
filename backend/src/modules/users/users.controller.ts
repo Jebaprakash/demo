@@ -13,6 +13,7 @@ export class UsersController {
     @Put('profile')
     @ApiOperation({ summary: 'Update user profile' })
     async updateProfile(@Request() req: any, @Body() updateData: any) {
-        return this.usersService.update(req.user.id, updateData);
+        const user = await this.usersService.update(req.user.id, updateData);
+        return { success: true, message: 'Profile updated successfully', user };
     }
 }

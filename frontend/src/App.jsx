@@ -45,9 +45,9 @@ function App() {
 
                     <Routes>
                         {/* Admin Routes - Must come BEFORE customer routes */}
-                        <Route path="/admin/login" element={<AdminLogin />} />
+                        <Route path="/portal-secure-mgt/login" element={<AdminLogin />} />
                         <Route
-                            path="/admin/dashboard"
+                            path="/portal-secure-mgt/dashboard"
                             element={
                                 <ProtectedRoute>
                                     <AdminDashboard />
@@ -55,7 +55,7 @@ function App() {
                             }
                         />
                         <Route
-                            path="/admin/products"
+                            path="/portal-secure-mgt/products"
                             element={
                                 <ProtectedRoute>
                                     <ProductManagement />
@@ -63,14 +63,14 @@ function App() {
                             }
                         />
                         <Route
-                            path="/admin/orders"
+                            path="/portal-secure-mgt/orders"
                             element={
                                 <ProtectedRoute>
                                     <OrderManagement />
                                 </ProtectedRoute>
                             }
                         />
-                        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+                        <Route path="/portal-secure-mgt" element={<Navigate to="/portal-secure-mgt/dashboard" replace />} />
 
                         {/* Customer Routes */}
                         <Route

@@ -13,7 +13,7 @@ export const ProtectedRoute = ({ children }) => {
     }
 
     if (!isAdminAuthenticated) {
-        return <Navigate to="/admin/login" replace />;
+        return <Navigate to="/portal-secure-mgt/login" replace />;
     }
 
     return children;

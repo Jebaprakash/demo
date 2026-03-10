@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 
         setAdmin(null);
         setIsAdminAuthenticated(false);
-        navigate('/admin/login');
+        navigate('/portal-secure-mgt/login');
     };
 
     const userLogin = (token, refreshToken, userData) => {
@@ -79,7 +79,14 @@ export const AuthProvider = ({ children }) => {
         navigate('/login');
     };
 
-    const value = {
+    const updateUser = (newUserData) => {
+        const currentUserData = JSON.parse(localStorage.getItem('userData') || '{}');
+        const updatedUserData = { ...currentUserData, ...newUserData };
+        localStorage.setItem('userData', JSON.stringify(updatedUserData));
+        setUser(updatedUserData);
+    };
+
+    const value = {      
         user,
         admin,
         isAuthenticated,
@@ -90,6 +97,7 @@ export const AuthProvider = ({ children }) => {
         adminLogout,
         userLogin,
         userLogout,
+        updateUser,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

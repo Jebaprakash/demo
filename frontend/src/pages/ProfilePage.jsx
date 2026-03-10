@@ -7,7 +7,7 @@ import { usersAPI, ordersAPI } from '../services/api';
 import { getImageUrl } from '../utils/url';
 
 export const ProfilePage = () => {
-    const { user, userLogout, isAuthenticated, loading: authLoading } = useAuth();
+    const { user, updateUser, userLogout, isAuthenticated, loading: authLoading } = useAuth();
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('profile');
     const [orders, setOrders] = useState([]);
@@ -90,6 +90,15 @@ export const ProfilePage = () => {
 
             if (res.data.success) {
                 toast.success('Profile updated successfully!');
+
+                // Update context so the new user data persists and UI updates reactively
+                if (res.data.user && updateUser) {
+                    updateUser(res.data.user);
+                } else if (res.data.user) {
+                    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                    const updatedUserData = { ...userData, ...res.data.user };
+                    localStorage.setItem('userData', JSON.stringify(updatedUserData));
+                }
             } else {
                 toast.error(res.data.message || 'Failed to update profile');
             }

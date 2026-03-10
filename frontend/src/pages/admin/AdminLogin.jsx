@@ -24,7 +24,7 @@ export const AdminLogin = () => {
 
             login(accessToken, null, admin);
             toast.success('Login successful!');
-            navigate('/admin/dashboard');
+            navigate('/portal-secure-mgt/dashboard');
         } catch (error) {
             console.error('Login error:', error);
             toast.error(error.response?.data?.message || 'Invalid credentials');
@@ -61,7 +61,6 @@ export const AdminLogin = () => {
                             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                             required
                             className="input-field"
-                            placeholder="admin"
                         />
                     </div>
 
@@ -75,7 +74,6 @@ export const AdminLogin = () => {
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             required
                             className="input-field"
-                            placeholder="••••••••"
                         />
                     </div>
 
@@ -91,7 +89,6 @@ export const AdminLogin = () => {
 
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
-                        Default credentials: admin / admin123
                     </p>
                 </div>
             </motion.div>

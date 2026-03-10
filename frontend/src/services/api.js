@@ -18,8 +18,8 @@ api.interceptors.request.use((config) => {
     const adminToken = localStorage.getItem('adminToken');
     const userToken = localStorage.getItem('userToken');
 
-    // Use admin token for any route starting with /admin
-    if (config.url.startsWith('/admin')) {
+    // Use admin token for any admin API route
+    if (config.url.startsWith('admin') || config.url.startsWith('/admin')) {
         if (adminToken) {
             config.headers.Authorization = `Bearer ${adminToken}`;
         }
@@ -38,13 +38,13 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            const isAdminRoute = window.location.pathname.startsWith('/admin');
+            const isAdminRoute = window.location.pathname.startsWith('/portal-secure-mgt');
 
             if (isAdminRoute) {
                 localStorage.removeItem('adminToken');
                 localStorage.removeItem('adminData');
-                if (!window.location.pathname.includes('/admin/login')) {
-                    window.location.href = '/admin/login';
+                if (!window.location.pathname.includes('/portal-secure-mgt/login')) {
+                    window.location.href = '/portal-secure-mgt/login';
                 }
             } else {
                 localStorage.removeItem('userToken');
