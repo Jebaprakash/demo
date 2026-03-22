@@ -10,9 +10,12 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: ['https://demo-mu-amber-91.vercel.app'],
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
+
+  app.setGlobalPrefix('api');
 
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe({
